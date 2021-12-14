@@ -21,12 +21,10 @@ runs:
       with:
         project: ${{ inputs.project }}
 
-    - if: ( true && (inputs.run_db_migrations_env && steps.validate.outputs.run_db_migrations_project))
+    - if: fromJson(inputs.run_db_migrations_env) && fromJson(steps.validate.outputs.run_db_migrations_project)
       name: 'Run - migration'
       run: |
         echo "|||||||||||||||||||||true && ${{ inputs.run_db_migrations_env }} && ${{ steps.validate.outputs.run_db_migrations_project }}"
-        echo "|||||||||||||||||||||"
-        echo ${{ inputs.run_db_migrations_env }} && ${{ steps.validate.outputs.run_db_migrations_project }}
         echo "|||||||||||||||||||||--------------------------------"
         ./.github/bin/ecs-db-migrate.sh
       shell: bash

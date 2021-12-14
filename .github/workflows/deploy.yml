@@ -1,12 +1,13 @@
 ---
 name: deploy
 
-on:
-  workflow_run:
-    workflows:
-      - 'learn-github-actions'
-    types:
-      - completed
+#on:
+#  workflow_run:
+#    workflows:
+#      - 'learn-github-actions'
+#    types:
+#      - completed
+on: [push]
 
 jobs:
   deploy:
@@ -21,7 +22,6 @@ jobs:
         project:
           - project_a
           - project_b
-          - project_c
     steps:
       - uses: actions/checkout@v2
 
