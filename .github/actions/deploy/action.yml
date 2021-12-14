@@ -21,9 +21,14 @@ runs:
       with:
         project: ${{ inputs.project }}
 
-    - if: inputs.run_db_migrations_env && steps.validate.outputs.run_db_migrations_project && true
+    - if: ( true && '${{ inputs.run_db_migrations_env }}' && '${{ steps.validate.outputs.run_db_migrations_project }}')
       name: 'Run - migration'
-      run: ./.github/bin/ecs-db-migrate.sh
+      run: |
+        echo "|||||||||||||||||||||true && ${{ inputs.run_db_migrations_env }} && ${{ steps.validate.outputs.run_db_migrations_project }}"
+        echo "|||||||||||||||||||||"
+        echo ${{ inputs.run_db_migrations_env }} && ${{ steps.validate.outputs.run_db_migrations_project }}
+        echo "|||||||||||||||||||||--------------------------------"
+        ./.github/bin/ecs-db-migrate.sh
       shell: bash
 
     - name: 'Run - deploy'
