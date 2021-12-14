@@ -21,11 +21,11 @@ runs:
       with:
         project: ${{ inputs.project }}
 
-    - if: ${{ inputs.run_db_migrations_env && steps.validate.outputs.run_db_migrations_project}}
-      run: |
-        echo "****************************** ${{ inputs.run_db_migrations_env && steps.validate.outputs.run_db_migrations_project}} <<*******************************";
-        ./.github/bin/ecs-db-migrate.sh
+    - if: ${{ inputs.run_db_migrations_env && steps.validate.outputs.run_db_migrations_project }}
+      name: 'Run - migration'
+      run: ./.github/bin/ecs-db-migrate.sh
       shell: bash
 
-    - run: ./.github/bin/ecs.sh
+    - name: 'Run - deploy'
+      run: ./.github/bin/ecs.sh
       shell: bash
