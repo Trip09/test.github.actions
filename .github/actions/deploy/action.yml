@@ -21,7 +21,7 @@ runs:
       with:
         project: ${{ inputs.project }}
 
-    - if: inputs.run_db_migrations_env && steps.validate.outputs.run_db_migrations_project
+    - if: inputs.run_db_migrations_env && steps.validate.outputs.run_db_migrations_project && true
       name: 'Run - migration'
       run: ./.github/bin/ecs-db-migrate.sh
       shell: bash
