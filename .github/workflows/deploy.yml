@@ -1,0 +1,39 @@
+---
+name: deploy
+
+on:
+  workflow_run:
+    workflows:
+      - 'learn-github-actions'
+    types:
+      - completed
+
+jobs:
+  deploy:
+    name: Deploy ${{ matrix.project }} to ${{ matrix.env }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        env:
+          - env_a
+          - env_b
+        project:
+          - project_a
+          - project_b
+          - project_c
+    steps:
+      - uses: actions/checkout@v2
+
+      - id: validate
+        uses: ./.github/actions/validate-env
+        with:
+          env: ${{ matrix.env }}
+          project: ${{ matrix.project }}
+
+      - if: fromJson(steps.validate.outputs.has-env)
+        uses: ./.github/actions/deploy
+        with:
+          run_db_migrations_env: ${{ steps.validate.outputs.run_db_migrations_env }}
+          env: ${{ matrix.env }}
+          project: ${{ matrix.project }}

@@ -1,0 +1,25 @@
+name: 'Project Validator'
+description: 'Validates a given project is valid'
+
+inputs:
+  project:
+    description: ''
+    required: true
+
+outputs:
+  run_db_migrations_project:
+    description: 'Should we run DB migrations for this Project? (boolean)'
+    value: ${{ steps.validate.outputs.run_db_migrations_project }}
+
+runs:
+  using: 'composite'
+  steps:
+    - id: validate
+      run: |
+        env_json=`cat ./.github/config/env.json`
+        all_projects=(`echo ${env_json} | jq -r '.ecs | keys | join(" ")'`)
+
+        run_db_migrations_project=`echo ${env_json} | jq -r '.ecs."${{ inputs.project }}".run_db_migrations'`
+
+        echo ::set-output name=run_db_migrations_project::$run_db_migrations_project
+      shell: bash

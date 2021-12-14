@@ -1,0 +1,33 @@
+name: 'Env Validator'
+description: 'Validates a given environment is valid'
+
+inputs:
+  env:
+    default: ''
+    description: ''
+    required: true
+  project:
+    description: ''
+    required: true
+
+outputs:
+  has-env:
+    description: 'Has Environment'
+    value: ${{ steps.validate.outputs.has-env }}
+  run_db_migrations_env:
+    description: 'Should we run DB migrations for this env? (boolean)'
+    value: ${{ steps.validate.outputs.run_db_migrations_env }}
+
+runs:
+  using: 'composite'
+  steps:
+    - id: validate
+      run: |
+        env_json=`cat ./.github/config/env.json`
+        has_env="true"
+
+        run_db_migrations_env=`echo ${env_json} | jq -r '.environments."${{ inputs.env }}".run_db_migrations'`
+
+        echo ::set-output name=has-env::${has_env}
+        echo ::set-output name=run_db_migrations_env::$run_db_migrations_env
+      shell: bash

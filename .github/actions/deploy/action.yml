@@ -1,0 +1,31 @@
+name: 'Test Deploy'
+description: ''
+
+inputs:
+  env:
+    description: ''
+    required: true
+  project:
+    description: ''
+    required: true
+  run_db_migrations_env:
+    description: 'Should run DB migrations on this ENV? (boolean)'
+    required: true
+
+
+runs:
+  using: 'composite'
+  steps:
+    - id: validate
+      uses: ./.github/actions/validate-project
+      with:
+        project: ${{ inputs.project }}
+
+    - if: ${{ inputs.run_db_migrations_env && steps.validate.outputs.run_db_migrations_project}}
+      run: |
+        echo "****************************** ${{ inputs.run_db_migrations_env && steps.validate.outputs.run_db_migrations_project}} <<*******************************";
+        ./.github/bin/ecs-db-migrate.sh
+      shell: bash
+
+    - run: ./.github/bin/ecs.sh
+      shell: bash
