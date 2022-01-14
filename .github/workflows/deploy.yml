@@ -19,7 +19,7 @@ jobs:
         with:
           result-encoding: string
           script: |
-            const commit_details = await github.git.getCommit({owner: context.repo.owner, repo: context.repo.repo, commit_sha: context.sha});
+            const commit_details = await github.rest.git.getCommit({owner: context.repo.owner, repo: context.repo.repo, commit_sha: context.sha});
             return {deployment_at: new Date(), commit_at: commit_details.data.author.date};
 
       - run: echo "COMMIT_AT --- $COMMIT_AT -- DEPLOYMENT_AT -- $DEPLOYMENT_AT -- TTT -- $TTT --"
