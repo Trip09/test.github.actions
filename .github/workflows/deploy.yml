@@ -11,20 +11,23 @@ on: [push]
 
 jobs:
   deploy:
-    - uses: actions/github-script@v5
-      id: test
-      with:
-        result-encoding: string
-        script: |
-          const commit_details = await github.git.getCommit({owner: context.repo.owner, repo: context.repo.repo, commit_sha: context.sha});
-          return {deployment_at: new Date(), commit_at: commit_details.data.author.date)};
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v5
+        id: test
+        with:
+          result-encoding: string
+          script: |
+            const commit_details = await github.git.getCommit({owner: context.repo.owner, repo: context.repo.repo, commit_sha: context.sha});
+            return {deployment_at: new Date(), commit_at: commit_details.data.author.date)};
 
-    - run: echo "COMMIT_AT --- $COMMIT_AT -- DEPLOYMENT_AT -- $DEPLOYMENT_AT -- TTT -- $TTT --"
-      env:
-        TTT: ${{ steps.dates.outputs.result }}
-        COMMIT_AT: ${{ steps.dates.outputs.result.commit_at }}
-        DEPLOYMENT_AT: ${{ steps.dates.outputs.result.deployment_at }}
-      shell: bash
+      - run: echo "COMMIT_AT --- $COMMIT_AT -- DEPLOYMENT_AT -- $DEPLOYMENT_AT -- TTT -- $TTT --"
+        env:
+          TTT: ${{ steps.dates.outputs.result }}
+          COMMIT_AT: ${{ steps.dates.outputs.result.commit_at }}
+          DEPLOYMENT_AT: ${{ steps.dates.outputs.result.deployment_at }}
+        shell: bash
 
 #    name: Deploy ${{ matrix.project }} to ${{ matrix.env }}
 #    runs-on: ubuntu-latest
